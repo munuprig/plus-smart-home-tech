@@ -43,9 +43,6 @@ public class KafkaClientConfig {
                     kafkaProducer.close(Duration.ofSeconds(10));
                 }
             }
-
-            @Override
-            public void flush() { kafkaProducer.flush(); }
         };
     }
 }
