@@ -1,16 +1,16 @@
 package ru.yandex.practicum.telemetry.collector.mapper.sensor;
 
 import org.springframework.stereotype.Component;
+
+import ru.yandex.practicum.grpc.telemetry.event.MotionSensorEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.MotionSensorAvro;
-import ru.yandex.practicum.telemetry.collector.model.sensor.MotionSensorEvent;
-import ru.yandex.practicum.telemetry.collector.model.sensor.SensorEvent;
-import ru.yandex.practicum.telemetry.collector.model.sensor.SensorEventType;
 
 @Component
 public class MotionSensorEventMapper extends BaseSensorEventMapper<MotionSensorAvro> {
     @Override
-    protected MotionSensorAvro mapToAvroPayload(SensorEvent event) {
-        MotionSensorEvent sensorEvent = (MotionSensorEvent) event;
+    protected MotionSensorAvro mapToAvroPayload(SensorEventProto event) {
+        MotionSensorEventProto sensorEvent = event.getMotionSensorEvent();
         return MotionSensorAvro.newBuilder()
                 .setLinkQuality(sensorEvent.getLinkQuality())
                 .setMotion(sensorEvent.getMotion())
@@ -19,7 +19,7 @@ public class MotionSensorEventMapper extends BaseSensorEventMapper<MotionSensorA
     }
 
     @Override
-    public SensorEventType getSensorEventType() {
-        return SensorEventType.MOTION_SENSOR_EVENT;
+    public SensorEventProto.PayloadCase getSensorEventType() {
+        return SensorEventProto.PayloadCase.MOTION_SENSOR_EVENT;
     }
 }
