@@ -1,4 +1,14 @@
 services:
+#  collector:
+#    build: telemetry/collector
+#    container_name: collector
+#    ports:
+#      - "59091:59091"
+#    networks:
+#      - net
+#    environment:
+#      spring__kafka__producer__bootstrap-servers: kafka:9092
+
   kafka:
     image: confluentinc/confluent-local:7.4.3
     hostname: kafka
@@ -6,6 +16,10 @@ services:
     ports:
       - "9092:9092" # for client connections
       - "9101:9101" # JMX
+      - "29092:29092"
+      - "8082:8082"
+    networks:
+      - net
     restart: unless-stopped
     environment:
       KAFKA_NODE_ID: 1
@@ -15,11 +29,14 @@ services:
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
       KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+
       CLUSTER_ID: 'K0EA9p0yEe6MkAAAAkKsEg'
 
   kafka-init-topics:
     image: confluentinc/confluent-local:7.4.3
     container_name: kafka-init-topics
+    networks:
+      - net
     depends_on:
       - kafka
     command: "bash -c \
@@ -33,3 +50,7 @@ services:
                              --partitions 1 --replication-factor 1 --if-not-exists \
                              --bootstrap-server kafka:29092'"
     init: true
+
+networks:
+  net:
+    driver: bridge

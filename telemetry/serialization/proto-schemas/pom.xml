@@ -22,6 +22,11 @@
             <artifactId>grpc-protobuf</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+        </dependency>
+
         <!-- Until gRPC generator library moves to generated jakarta instead of javax -->
         <!-- https://github.com/grpc/grpc-java/issues/9179 -->
         <dependency>
