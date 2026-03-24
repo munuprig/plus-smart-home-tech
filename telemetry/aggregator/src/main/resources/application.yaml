@@ -8,10 +8,11 @@ collector:
     consumer:
       properties:
         client.id: AggregatorConsumer
-        group.id: aggregator.group
+        group.id: aggregator-group
         bootstrap.servers: localhost:9092
         key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
         value.deserializer: ru.yandex.practicum.kafka.deserializer.SensorEventDeserializer
+        enable.auto.commit: false
     topics:
       sensors-events: telemetry.sensors.v1
       hubs-events: telemetry.hubs.v1

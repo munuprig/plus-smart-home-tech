@@ -4,12 +4,14 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 import java.util.Properties;
+import java.util.concurrent.Future;
 
 @Configuration
 public class KafkaClientConfig {
@@ -43,6 +45,9 @@ public class KafkaClientConfig {
                     kafkaProducer.close(Duration.ofSeconds(10));
                 }
             }
+
+            @Override
+            public void flush() { kafkaProducer.flush(); }
         };
     }
 }
