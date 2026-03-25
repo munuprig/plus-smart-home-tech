@@ -75,7 +75,7 @@ public class SnapshotHandler {
         }
     }
 
-    private Boolean handleOperation(Condition condition, Integer currentValue) {
+    private boolean handleOperation(Condition condition, Integer currentValue) {
         ConditionOperationAvro conditionOperation = condition.getOperation();
         Integer targetValue = condition.getValue();
 
@@ -88,9 +88,6 @@ public class SnapshotHandler {
             }
             case GREATER_THAN -> {
                 return currentValue > targetValue;
-            }
-            case null -> {
-                return null;
             }
         }
     }
