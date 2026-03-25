@@ -89,6 +89,9 @@ public class SnapshotHandler {
             case GREATER_THAN -> {
                 return currentValue > targetValue;
             }
+            case null -> {
+                return false;
+            }
         }
     }
 
