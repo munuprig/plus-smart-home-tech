@@ -19,7 +19,7 @@ public class KafkaConsumerProperties {
     private final Environment environment;
 
     @Bean
-    public Consumer<String, HubEventAvro> getHubEventProperties() {
+    public Consumer<String, HubEventAvro> getHubEventConsumer() {
         Properties properties = new Properties();
         properties.put(ConsumerConfig.CLIENT_ID_CONFIG, environment.getProperty("spring.kafka.consumer.client-id"));
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("spring.kafka.consumer.group-id"));
@@ -35,7 +35,7 @@ public class KafkaConsumerProperties {
     }
 
     @Bean
-    public Consumer<String, SensorsSnapshotAvro> getSnapshotProperties() {
+    public Consumer<String, SensorsSnapshotAvro> getSnapshotConsumer() {
         Properties properties = new Properties();
         properties.put(ConsumerConfig.CLIENT_ID_CONFIG, environment.getProperty("spring.kafka.consumer.snapshots-client-id"));
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("spring.kafka.consumer.snapshots-group-id"));

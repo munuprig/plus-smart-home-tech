@@ -18,21 +18,18 @@ import java.util.Optional;
 public class AggregatorServiceImpl implements AggregatorService {
     @Value("${collector.kafka.topics.snapshots-events}")
     private String snapshotsEventsTopic;
-    private Map<String, SensorsSnapshotAvro> snapshots = new HashMap<>();
+    private final Map<String, SensorsSnapshotAvro> snapshots = new HashMap<>();
 
     @Override
     public void aggregationSnapshot(Producer<String, SpecificRecordBase> producer, SpecificRecordBase sensorEventAvro) {
         SensorEventAvro event = (SensorEventAvro) sensorEventAvro;
         Optional<SensorsSnapshotAvro> snapshotOpt = updateState(event);
-        if (snapshotOpt.isPresent()) {
-            SensorsSnapshotAvro snapshot = snapshotOpt.get();
-            producer.send(new ProducerRecord<>(
-                    snapshotsEventsTopic,
-                    null,
-                    snapshot.getTimestamp().toEpochMilli(),
-                    snapshot.getHubId(),
-                    snapshot));
-        }
+        snapshotOpt.ifPresent(snapshot -> producer.send(new ProducerRecord<>(
+                snapshotsEventsTopic,
+                null,
+                snapshot.getTimestamp().toEpochMilli(),
+                snapshot.getHubId(),
+                snapshot)));
     }
 
     private Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
