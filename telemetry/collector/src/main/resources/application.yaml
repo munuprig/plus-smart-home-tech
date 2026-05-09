@@ -1,20 +1,11 @@
-collector:
-  kafka:
-    producer:
-      properties:
-        bootstrap.servers: localhost:9092
-        key.serializer: org.apache.kafka.common.serialization.StringSerializer
-        value.serializer: ru.yandex.practicum.kafka.serializer.GeneralAvroSerializer
-      topics:
-        sensors-events: telemetry.sensors.v1
-        hubs-events: telemetry.hubs.v1
-        snapshots-events: telemetry.snapshots.v1
-
-grpc:
-  server:
-    port: 59091
-
 spring:
-  output:
-    ansi:
-      enabled: always
+  application:
+    name: collector
+  config:
+    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000
