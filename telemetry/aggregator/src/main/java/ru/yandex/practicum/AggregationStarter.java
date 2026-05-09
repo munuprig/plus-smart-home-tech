@@ -25,7 +25,8 @@ public class AggregationStarter {
 
     @Value("${collector.kafka.topics.sensors-events}")
     private String sensorsEventsTopic;
-
+    @Value("${collector.kafka.topics.snapshots-events}")
+    private String snapshotsEventsTopic;
     private static final Duration CONSUME_ATTEMPT_TIMEOUT = Duration.ofMillis(1000);
 
     public AggregationStarter(KafkaClient kafkaClient, AggregatorService aggregatorService) {
