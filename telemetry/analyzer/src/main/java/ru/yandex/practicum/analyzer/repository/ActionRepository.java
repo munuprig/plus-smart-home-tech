@@ -10,5 +10,5 @@ public interface ActionRepository extends JpaRepository<Action, Long> {
 
     void deleteByScenario(Scenario scenario);
 
-    List<Action> findAllByScenarioIn(List<Scenario> scenario);
+    List<Action> findAllByScenario(Scenario scenario);
 }
