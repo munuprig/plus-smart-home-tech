@@ -9,10 +9,6 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.telemetry.collector.config.KafkaClient;
 import ru.yandex.practicum.telemetry.collector.mapper.hub.HubEventMapper;
 import ru.yandex.practicum.telemetry.collector.mapper.sensor.SensorEventMapper;
-import ru.yandex.practicum.telemetry.collector.model.hub.HubEvent;
-import ru.yandex.practicum.telemetry.collector.model.hub.enums.HubEventType;
-import ru.yandex.practicum.telemetry.collector.model.sensor.SensorEvent;
-import ru.yandex.practicum.telemetry.collector.model.sensor.SensorEventType;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 
 import java.util.List;

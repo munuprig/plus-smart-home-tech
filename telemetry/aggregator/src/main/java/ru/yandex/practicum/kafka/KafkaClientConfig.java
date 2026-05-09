@@ -28,7 +28,7 @@ public class KafkaClientConfig {
     }
 
     @Bean
-    public KafkaClient getKafkaClient() {
+    KafkaClient getKafkaClient() {
         return new KafkaClient() {
             private Producer<String, SpecificRecordBase> kafkaProducer;
             private Consumer<String, SpecificRecordBase> kafkaConsumer;
