@@ -10,8 +10,8 @@ import java.util.concurrent.*;
 @SpringBootApplication
 public class AnalyzerApplication {
 
-    @Value("${threadPool.arrayBlockingQueue.capacity:2}")
-    private int arrayBlockingQueueCapacity;
+    @Value("${threadPool.arrayBlockingQueue.capacity}")
+    private final int arrayBlockingQueueCapacity = 2;
     @Value("${threadPool.corePoolSize}")
     private final int threadPoolCorePoolSize = 2;
     @Value("${threadPool.maximumPoolSize}")
