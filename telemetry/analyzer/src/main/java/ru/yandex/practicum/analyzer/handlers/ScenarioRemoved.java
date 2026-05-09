@@ -41,3 +41,4 @@ public class ScenarioRemoved implements HubEventHandler {
         return ScenarioRemovedEventAvro.class.getSimpleName();
     }
 }
+

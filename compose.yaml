@@ -1,4 +1,66 @@
 services:
+  db:
+    image: postgres:16.1
+    container_name: db
+#    networks:
+#      - net
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=username
+      - POSTGRES_DB=scenario-db
+
+  store-db:
+    image: postgres:16.1
+    container_name: store-db
+    ports:
+      - "6432:5432"
+    environment:
+      - POSTGRES_PASSWORD=store
+      - POSTGRES_USER=store
+      - POSTGRES_DB=store-db
+
+  cart-db:
+    image: postgres:16.1
+    container_name: cart-db
+    ports:
+      - "7432:5432"
+    environment:
+      - POSTGRES_PASSWORD=cart
+      - POSTGRES_USER=cart
+      - POSTGRES_DB=cart-db
+
+
+  warehouse-db:
+    image: postgres:16.1
+    container_name: warehouse-db
+    ports:
+      - "8432:5432"
+    environment:
+      - POSTGRES_PASSWORD=warehouse
+      - POSTGRES_USER=warehouse
+      - POSTGRES_DB=warehouse-db
+
+#  analyzer:
+#    build: telemetry/analyzer
+#    container_name: analyzer
+#    networks:
+#      - net
+#    environment:
+#      spring__kafka__producer__bootstrap-servers: kafka:9092
+#      spring__datasource__url: jdbc:postgresql://db:5432/scenario-db
+
+  #  collector:
+#    build: telemetry/collector
+#    container_name: collector
+#    ports:
+#      - "59091:59091"
+#    networks:
+#      - net
+#    environment:
+#      spring__kafka__producer__bootstrap-servers: kafka:9092
+
   kafka:
     image: confluentinc/confluent-local:7.4.3
     hostname: kafka
@@ -6,6 +68,10 @@ services:
     ports:
       - "9092:9092" # for client connections
       - "9101:9101" # JMX
+      - "29092:29092"
+      - "8082:8082"
+#    networks:
+#      - net
     restart: unless-stopped
     environment:
       KAFKA_NODE_ID: 1
@@ -15,11 +81,14 @@ services:
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
       KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+
       CLUSTER_ID: 'K0EA9p0yEe6MkAAAAkKsEg'
 
   kafka-init-topics:
     image: confluentinc/confluent-local:7.4.3
     container_name: kafka-init-topics
+#    networks:
+#      - net
     depends_on:
       - kafka
     command: "bash -c \
@@ -34,17 +103,6 @@ services:
                              --bootstrap-server kafka:29092'"
     init: true
 
-  db:
-    image: postgres:16.1
-    container_name: postgres-analyzer-db
-    ports:
-      - "5433:5432"
-    environment:
-      - POSTGRES_USER=analyzer
-      - POSTGRES_PASSWORD=analyzer
-      - POSTGRES_DB=analyzer
-    healthcheck:
-      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
-      timeout: 5s
-      interval: 5s
-      retries: 10
+#networks:
+#  net:
+#    driver: bridge
