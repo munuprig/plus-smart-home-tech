@@ -1,6 +1,7 @@
 package ru.yandex.practicum.analyzer.handlers;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.analyzer.model.Sensor;
@@ -8,6 +9,7 @@ import ru.yandex.practicum.analyzer.repository.SensorRepository;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DeviceAdded implements HubEventHandler {
