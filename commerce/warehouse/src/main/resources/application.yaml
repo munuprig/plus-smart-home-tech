@@ -1,3 +1,6 @@
+server:
+  port: 0
+
 spring:
   application:
     name: warehouse
@@ -10,15 +13,13 @@ spring:
         enabled: true
         service-id: config-server
       retry:
-        use-random-policy: true
+        useRandomPolicy: true
         max-interval: 6000
 
 eureka:
   instance:
     instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
-    registerWithEureka: true
-    fetchRegistry: true
     healthcheck:
       enabled: true
     serviceUrl:
