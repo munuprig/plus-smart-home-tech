@@ -2,21 +2,24 @@ package ru.yandex.practicum.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import ru.yandex.practicum.request.SetProductQuantityStateRequest;
+import ru.yandex.practicum.dto.PageableDto;
 import ru.yandex.practicum.dto.ProductDto;
 import ru.yandex.practicum.enums.ProductCategory;
 import ru.yandex.practicum.enums.ProductState;
-import ru.yandex.practicum.request.SetProductQuantityStateRequest;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.mapper.ProductMapper;
 import ru.yandex.practicum.model.Product;
 import ru.yandex.practicum.repository.ShoppingStoreRepository;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,51 +27,41 @@ import java.util.UUID;
 @Transactional
 public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
-    private final ShoppingStoreRepository storeRepository;
+    private final ShoppingStoreRepository shoppingStoreRepository;
     private final ProductMapper productMapper;
 
     @Transactional(readOnly = true)
-    public Page<ProductDto> getProducts(ProductCategory productCategory, Pageable pageableDto) {
-        Sort sort = pageableDto.getSort();
-
-        if (sort.isEmpty()) {
-            sort = Sort.by(Sort.Direction.ASC, "productName");
+    public List<ProductDto> getProducts(ProductCategory productCategory, PageableDto pageableDto) {
+        Pageable pageRequest = PageRequest.of(pageableDto.getPage(), pageableDto.getSize(),
+                Sort.by(Sort.DEFAULT_DIRECTION, String.join(",", pageableDto.getSort())));
+        List<Product> products = shoppingStoreRepository.findAllByProductCategory(productCategory, pageRequest);
+        if (CollectionUtils.isEmpty(products)) {
+            return Collections.emptyList();
+        } else {
+            return productMapper.productsToProductsDto(products);
         }
-
-        PageRequest pageRequest = PageRequest.of(
-                pageableDto.getPageNumber(),
-                pageableDto.getPageSize(),
-                sort
-        );
-
-        Page<Product> products = storeRepository.findAllByProductCategory(
-                productCategory,
-                pageRequest
-        );
-
-        return products.map(productMapper::productToProductDto);
     }
 
     @Override
     public ProductDto createNewProduct(ProductDto productDto) {
         Product newProduct = productMapper.productDtoToProduct(productDto);
-        return productMapper.productToProductDto(storeRepository.save(newProduct));
+        return productMapper.productToProductDto(shoppingStoreRepository.save(newProduct));
     }
 
     @Override
     public ProductDto updateProduct(ProductDto productDto) {
-        Product oldProduct = storeRepository.findById(productDto.getProductId())
+        Product oldProduct = shoppingStoreRepository.findByProductId(productDto.getProductId())
                 .orElseThrow(() -> new ProductNotFoundException(
                         String.format("Ошибка, товар по id %s в БД не найден", productDto.getProductId()))
                 );
         Product newProduct = productMapper.productDtoToProduct(productDto);
         newProduct.setProductId(oldProduct.getProductId());
-        return productMapper.productToProductDto(storeRepository.save(newProduct));
+        return productMapper.productToProductDto(shoppingStoreRepository.save(newProduct));
     }
 
     @Override
     public boolean removeProductFromStore(UUID productId) {
-        Product product = storeRepository.findById(productId).orElseThrow(
+        Product product = shoppingStoreRepository.findByProductId(productId).orElseThrow(
                 () -> new ProductNotFoundException(String.format("Ошибка, товар по id %s в БД не найден", productId))
         );
         product.setProductState(ProductState.DEACTIVATE);
@@ -76,25 +69,18 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
-    public boolean setProductQuantityState(SetProductQuantityStateRequest request) {
-        if (storeRepository.findById(request.getProductId()).isEmpty()) {
-            return false;
-        }
-        Product product = storeRepository.findById(request.getProductId())
+    public boolean setProductQuantityState(SetProductQuantityStateRequest setProductQuantityStateRequest) {
+        Product product = shoppingStoreRepository.findByProductId(setProductQuantityStateRequest.getProductId())
                 .orElseThrow(
-                        () -> new ProductNotFoundException(String.format(
-                                "Ошибка, товар по id %s в БД не найден", request.getProductId()))
+                        () -> new ProductNotFoundException(String.format("Ошибка, товар по id %s в БД не найден", setProductQuantityStateRequest.getProductId()))
                 );
-        if (!product.getQuantityState().equals(request.getQuantityState())) {
-            product.setQuantityState(request.getQuantityState());
-            storeRepository.save(product);
-        }
+        product.setQuantityState(setProductQuantityStateRequest.getQuantityState());
         return true;
     }
 
     @Override
     public ProductDto getProduct(UUID productId) {
-        Product product = storeRepository.findById(productId).orElseThrow(
+        Product product = shoppingStoreRepository.findByProductId(productId).orElseThrow(
                 () -> new ProductNotFoundException(String.format("Ошибка, товар по id %s в БД не найден", productId))
         );
         return productMapper.productToProductDto(product);

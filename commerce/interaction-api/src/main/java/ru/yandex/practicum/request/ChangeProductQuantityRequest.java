@@ -1,5 +1,6 @@
 package ru.yandex.practicum.request;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -14,5 +15,6 @@ public class ChangeProductQuantityRequest {
     UUID productId;
 
     @NotNull
-    Integer newQuantity;
+    @Min(0)
+    Long newQuantity;
 }

@@ -14,6 +14,4 @@ public class QuantityThresholdProperties {
     private int ended;
     private int enough;
     private int few;
-
-    // getters/setters
 }

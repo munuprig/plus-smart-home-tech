@@ -13,10 +13,13 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>interaction-api</module>
         <module>shopping-store</module>
         <module>shopping-cart</module>
         <module>warehouse</module>
+        <module>interaction-api</module>
+        <module>order</module>
+        <module>payment</module>
+        <module>delivery</module>
     </modules>
 
 </project>
