@@ -1,17 +1,25 @@
-drop table if exists shopping_cart, shopping_cart_items;
+drop table if exists shopping_cart,shopping_cart_items,warehouse_product;
 
-create table if not exists shopping_cart
-(
-    shopping_cart_id uuid default gen_random_uuid() primary key,
-    username varchar(255) not null,
-    active boolean not null
-);
-
-create table if not exists shopping_cart_items
-(
-    product_id uuid not null,
+create table if not exists warehouse_product(
+    product_id uuid primary key,
     quantity integer,
-    cart_id uuid references shopping_cart (shopping_cart_id) on delete cascade
+    fragile boolean,
+    width double precision,
+    height double precision,
+    depth double precision,
+    weight double precision
 );
 
+create table if not exists bookings(
+    shopping_cart_id uuid primary key,
+    delivery_weight double precision not null,
+    delivery_volume double precision not null,
+    fragile boolean not null,
+    order_id uuid
+);
 
+create table if not exists booking_products(
+    shopping_cart_id uuid references bookings(shopping_cart_id) on delete cascade primary key,
+    product_id uuid not null,
+    quantity integer
+);

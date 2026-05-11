@@ -1,7 +1,6 @@
 package ru.yandex.practicum.analyzer.handlers;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.analyzer.client.HubRouterClient;
 import ru.yandex.practicum.analyzer.model.Condition;
@@ -14,7 +13,6 @@ import ru.yandex.practicum.kafka.telemetry.event.*;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SnapshotHandler {
@@ -26,17 +24,17 @@ public class SnapshotHandler {
 
     public void buildSnapshot(SensorsSnapshotAvro sensorsSnapshot) {
         Map<String, SensorStateAvro> sensorStateMap = sensorsSnapshot.getSensorsState();
-        List<Scenario> scenarios = scenarioRepository.findByHubId(sensorsSnapshot.getHubId());
-        scenarios.stream()
+        List<Scenario> scenarios = scenarioRepository.findByHubId(sensorsSnapshot.getHubId())
+                .stream()
                 .filter(scenario -> handleScenario(scenario, sensorStateMap))
-                .forEach(scenario -> {
-                    sendScenarioActions(scenario);
-                });
+                .toList();
+
+        sendScenarioActions(scenarios);
     }
 
     private boolean handleScenario(Scenario scenario, Map<String, SensorStateAvro> sensorStateMap) {
         List<Condition> conditions = conditionRepository.findAllByScenario(scenario);
-        return conditions.stream().noneMatch(condition -> !checkCondition(condition, sensorStateMap));
+        return conditions.stream().allMatch(condition -> checkCondition(condition, sensorStateMap));
     }
 
     private boolean checkCondition(Condition condition, Map<String, SensorStateAvro> sensorStateMap) {
@@ -49,7 +47,7 @@ public class SnapshotHandler {
         switch (condition.getType()) {
             case LUMINOSITY -> {
                 LightSensorAvro lightSensor = (LightSensorAvro) sensorState.getData();
-                return handleOperation(condition, lightSensor.getLuminosity());
+                return handleOperation(condition, lightSensor.getLuminosityl());
             }
             case TEMPERATURE -> {
                 ClimateSensorAvro temperatureSensor = (ClimateSensorAvro) sensorState.getData();
@@ -97,7 +95,8 @@ public class SnapshotHandler {
         }
     }
 
-    private void sendScenarioActions(Scenario scenario) {
-        actionRepository.findAllByScenario(scenario).forEach(hubRouterClient::sendAction);
+    private void sendScenarioActions(List<Scenario> scenarios) {
+        actionRepository.findAllByScenarioIn(scenarios)
+                .forEach(hubRouterClient::sendAction);
     }
 }

@@ -1,7 +1,7 @@
-server:
-  port: 0
-
 spring:
+  main:
+    allow-bean-definition-overriding: true
+
   application:
     name: shopping-cart
   config:
@@ -20,6 +20,8 @@ eureka:
   instance:
     instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
+    registerWithEureka: true
+    fetchRegistry: true
     healthcheck:
       enabled: true
     serviceUrl:
