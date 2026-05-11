@@ -1,11 +1,13 @@
 package ru.yandex.practicum.service;
 
 
+import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.config.QuantityThresholdProperties;
 import ru.yandex.practicum.dto.AddressDto;
 import ru.yandex.practicum.dto.BookedProductsDto;
 import ru.yandex.practicum.dto.ShoppingCartDto;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 @Transactional(isolation = Isolation.READ_COMMITTED)
 public class WarehouseServiceImpl implements WarehouseService {
 
+    private final QuantityThresholdProperties properties;
     private final WarehouseRepository warehouseRepository;
     private final WarehouseMapper warehouseMapper;
     private final ShoppingStoreClient shoppingStoreClient;
@@ -49,24 +52,37 @@ public class WarehouseServiceImpl implements WarehouseService {
         warehouseRepository.flush();
     }
 
-    public BookedProductsDto checkProductQuantityEnoughForShoppingCart(ShoppingCartDto shoppingCartDto) {
+    public BookedProductsDto checkProductQuantityEnoughForShoppingCart(
+            ShoppingCartDto shoppingCartDto
+    ) {
         Map<UUID, Integer> products = shoppingCartDto.getProducts();
         Set<UUID> cartProductIds = products.keySet();
+
         Map<UUID, Warehouse> warehouseProducts = warehouseRepository.findAllById(cartProductIds)
                 .stream()
-                .collect(Collectors.toMap(Warehouse::getProductId, Function.identity()));
+                .collect(Collectors.toMap(
+                        Warehouse::getProductId,
+                        Function.identity()
+                ));
 
-        Set<UUID> productIds = warehouseProducts.keySet();
-        cartProductIds.forEach(id -> {
-            if (!productIds.contains(id)) {
-                throw new ProductNotFoundInWarehouseException("Ошибка, товар не находится на складе.");
-            }
-        });
+        Set<UUID> missingIds = Sets.difference(
+                cartProductIds,
+                warehouseProducts.keySet()
+        );
 
-        products.forEach((key, value) -> {
-            if (warehouseProducts.get(key).getQuantity() < value) {
+        if (!missingIds.isEmpty()) {
+            throw new ProductNotFoundInWarehouseException(
+                    "Товары не найдены на складе: " + missingIds
+            );
+        }
+
+        products.forEach((productId, requestedQuantity) -> {
+            Warehouse warehouse = warehouseProducts.get(productId);
+
+            if (warehouse.getQuantity() < requestedQuantity) {
                 throw new ProductInShoppingCartLowQuantityInWarehouseException(
-                        "Ошибка, товар из корзины не находится в требуемом количестве на складе");
+                        "Недостаточное количество товара на складе. productId=" + productId
+                );
             }
         });
 
@@ -139,11 +155,11 @@ public class WarehouseServiceImpl implements WarehouseService {
         QuantityState quantityState;
         int quantity = product.getQuantity();
 
-        if (quantity == 0) {
+        if (quantity == properties.getEnded()) {
             quantityState = QuantityState.ENDED;
-        } else if (quantity < 10) {
+        } else if (quantity < properties.getEnough()) {
             quantityState = QuantityState.ENOUGH;
-        } else if (quantity < 100) {
+        } else if (quantity < properties.getFew()) {
             quantityState = QuantityState.FEW;
         } else {
             quantityState = QuantityState.MANY;

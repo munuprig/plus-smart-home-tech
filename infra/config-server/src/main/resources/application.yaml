@@ -13,11 +13,14 @@ spring:
             - classpath:config/common.yaml
 
 server:
-  port: 8888
+  port: 0
 
 eureka:
   client:
-    registerWithEureka: true
-    fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname:localhost}:${eureka.instance.port:8761}/eureka/
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    hostname: localhost
+    instance-id: "${spring.application.name}:${random.value}"
+    leaseRenewalIntervalInSeconds: 10
