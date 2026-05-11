@@ -1,4 +1,4 @@
-collector:
+aggregator:
   kafka:
     producer:
       properties:

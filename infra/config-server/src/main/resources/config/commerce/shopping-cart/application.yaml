@@ -1,0 +1,20 @@
+server:
+  port: 0
+
+spring:
+  jpa:
+    show-sql: false
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc.time_zone: UTC
+        format_sql: true
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:7432/cart-db
+    username: cart
+    password: cart

@@ -1,0 +1,48 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      client-id: HubEventConsumer
+      group-id: hubEvent.group.id
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: ru.yandex.practicum.kafka.deserializer.HubEventDeserializer
+      enable-auto-commit: false
+      snapshots-client-id: SnapshotsConsumer
+      snapshots-group-id: snapshot.group.id
+      snapshots-deserializer: ru.yandex.practicum.kafka.deserializer.SnapshotEventDeserializer
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+    show_sql: true
+  sql:
+    init:
+      mode: always
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/analyzer
+    username: analyzer
+    password: analyzer
+
+topic:
+  snapshots-topic: telemetry.snapshots.v1
+  hub-event-topic: telemetry.hubs.v1
+
+grpc:
+  server:
+    port: 59092
+  client:
+    hub-router:
+      address: discovery:///hub-router
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
+threadPool:
+  arrayBlockingQueue:
+    capacity: 2
+  corePoolSize: 2
+  maximumPoolSize: 2
+  keepAliveTime: 60
