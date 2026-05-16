@@ -1,6 +1,5 @@
 package ru.yandex.practicum.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -10,11 +9,10 @@ import lombok.experimental.FieldDefaults;
 import java.util.Map;
 import java.util.UUID;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ShoppingCartDto {
     @NotNull
@@ -22,7 +20,7 @@ public class ShoppingCartDto {
 
     @NotNull
     @NotEmpty
-    Map<@NotNull UUID, @NotNull @Positive Integer> products;
+    Map<@NotNull UUID, @NotNull @Positive Long> products;
 
 
 }

@@ -14,6 +14,7 @@ import java.util.Arrays;
 @Slf4j
 @RestControllerAdvice
 public class ErrorResponseWarehouse {
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleCommonException(RuntimeException e) {
@@ -32,7 +33,7 @@ public class ErrorResponseWarehouse {
     @ExceptionHandler({MissingServletRequestParameterException.class,
             MethodArgumentNotValidException.class,
             NoSpecifiedProductInWarehouseException.class,
-            ru.yandex.practicum.exception.ProductInShoppingCartLowQuantityInWarehouseException.class,
+            ProductInShoppingCartLowQuantityInWarehouseException.class,
             SpecifiedProductAlreadyInWarehouseException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadRequestException(RuntimeException e) {

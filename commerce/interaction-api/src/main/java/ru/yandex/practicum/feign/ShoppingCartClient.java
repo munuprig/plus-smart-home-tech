@@ -1,33 +1,34 @@
 package ru.yandex.practicum.feign;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.dto.BookedProductsDto;
 import ru.yandex.practicum.dto.ShoppingCartDto;
 import ru.yandex.practicum.request.ChangeProductQuantityRequest;
 
 import java.util.Map;
 import java.util.UUID;
 
-@FeignClient(name = "shopping-cart")
+@FeignClient(name = "shopping-cart", path = "/api/v1/shopping-cart")
 public interface ShoppingCartClient {
 
-    @GetMapping("/api/v1/shopping-cart")
-    ShoppingCartDto getShoppingCart(@RequestParam @NotBlank String username);
+    @GetMapping
+    ShoppingCartDto getShoppingCart(@RequestParam String username);
 
-    @PutMapping("/api/v1/shopping-cart")
-    ShoppingCartDto addProductToShoppingCart(@RequestParam @NotBlank String username,
+    @PutMapping
+    ShoppingCartDto addProductToShoppingCart(@RequestParam String username,
                                              @RequestBody Map<UUID, Long> request);
+    @DeleteMapping
+    void deactivateCurrentShoppingCart(@RequestParam String username);
 
-    @DeleteMapping("/api/v1/shopping-cart")
-    void deactivateCurrentShoppingCart(@RequestParam @NotBlank String username);
-
-    @PostMapping("/api/v1/shopping-cart/remove")
-    ShoppingCartDto removeFromShoppingCart(@RequestParam @NotBlank String username,
+    @PostMapping("/remove")
+    ShoppingCartDto removeFromShoppingCart(@RequestParam String username,
                                            @RequestBody Map<UUID, Long> request);
 
-    @PostMapping("/api/v1/shopping-cart/change-quantity")
-    ShoppingCartDto changeProductQuantity(@RequestParam @NotBlank String username,
-                                          @RequestBody @Valid ChangeProductQuantityRequest requestDto);
+    @PostMapping("/change-quantity")
+    ShoppingCartDto changeProductQuantity(@RequestParam String username, @RequestBody @Valid ChangeProductQuantityRequest requestDto);
+
+    @PostMapping("/booking")
+    BookedProductsDto bookingProductsForUser(@RequestParam String username);
 }
