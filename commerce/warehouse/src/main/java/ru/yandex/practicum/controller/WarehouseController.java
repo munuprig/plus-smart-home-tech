@@ -30,7 +30,7 @@ public class WarehouseController {
             log.info("Добавить новый товар на склад {}", requestDto);
             warehouseService.newProductInWarehouse(requestDto);
         } catch (Exception e) {
-            log.error("Ошибка добавления нового товара на склад.");
+            log.error("Ошибка добавления нового товара на склад.", e);
             throw e;
         }
     }
@@ -41,7 +41,7 @@ public class WarehouseController {
             log.info("Передать товары в доставку {}", deliveryRequest);
             warehouseService.shippedToDelivery(deliveryRequest);
         } catch (Exception e) {
-            log.error("Ошибка передачи товаров в доставку.");
+            log.error("Ошибка передачи товаров в доставку.", e);
             throw e;
         }
     }
@@ -52,7 +52,7 @@ public class WarehouseController {
             log.info("Принять возврат товаров на склад {}", products);
             warehouseService.acceptReturn(products);
         } catch (Exception e) {
-            log.error("Ошибка возврата товаров на склад.");
+            log.error("Ошибка возврата товаров на склад.", e);
             throw e;
         }
     }
@@ -63,7 +63,7 @@ public class WarehouseController {
             log.info("Предварительно проверить что количество товаров на складе достаточно для данной корзины продуктов {}", shoppingCartDto);
             return warehouseService.checkProductQuantityEnoughForShoppingCart(shoppingCartDto);
         } catch (Exception e) {
-            log.error("Ошибка проверки.");
+            log.error("Ошибка проверки.", e);
             throw e;
         }
     }
@@ -74,7 +74,7 @@ public class WarehouseController {
             log.info("Собрать товары к заказу для подготовки к отправке {}",  assemblyProductsForOrder);
             return warehouseService.assemblyProductsForOrder(assemblyProductsForOrder);
         } catch (Exception e) {
-            log.error("Ошибка сборки товаров.");
+            log.error("Ошибка сборки товаров.", e);
             throw e;
         }
     }
@@ -85,7 +85,7 @@ public class WarehouseController {
             log.info("Принять товар на склад {}", requestDto);
             warehouseService.addProductToWarehouse(requestDto);
         } catch (Exception e) {
-            log.error("Ошибка принятия товара на склад.");
+            log.error("Ошибка принятия товара на склад.", e);
             throw e;
         }
     }
@@ -96,7 +96,7 @@ public class WarehouseController {
             log.info("Предоставить адрес склада для расчёта доставки.");
             return warehouseService.getWarehouseAddress();
         } catch (Exception e) {
-            log.error("Ошибка предоставления адреса склада.");
+            log.error("Ошибка предоставления адреса склада.", e);
             throw e;
         }
     }
@@ -107,7 +107,7 @@ public class WarehouseController {
             log.info("Бронирование корзины покупок {}", shoppingCartDto);
             return warehouseService.bookingProducts(shoppingCartDto);
         } catch (Exception e) {
-            log.error("Ошибка бронирования корзины покупок.");
+            log.error("Ошибка бронирования корзины покупок.", e);
             throw e;
         }
     }

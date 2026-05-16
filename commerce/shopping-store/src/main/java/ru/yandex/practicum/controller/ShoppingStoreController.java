@@ -28,7 +28,7 @@ public class ShoppingStoreController {
             log.info("Получение списка товаров по типу в пагинированном виде.");
             return shoppingStoreService.getProducts(productCategory, pageableDto);
         } catch (Exception e) {
-            log.error("Ошибка получения списка товаров.");
+            log.error("Ошибка получения списка товаров.", e);
             throw e;
         }
     }
@@ -39,7 +39,7 @@ public class ShoppingStoreController {
             log.info("Создание нового товара в ассортименте {}", productDto);
             return shoppingStoreService.createNewProduct(productDto);
         } catch (Exception e) {
-            log.error("Ошибка создания нового товара.");
+            log.error("Ошибка создания нового товара.", e);
             throw e;
         }
     }
@@ -50,7 +50,7 @@ public class ShoppingStoreController {
             log.info("Обновление товара в ассортименте {}", productDto);
             return shoppingStoreService.updateProduct(productDto);
         } catch (Exception e) {
-            log.error("Ошибка обновления товара.");
+            log.error("Ошибка обновления товара.", e);
             throw e;
         }
     }
@@ -61,7 +61,7 @@ public class ShoppingStoreController {
             log.info("Удаление товара из ассортимента магазина. Функция для менеджерского состава. {}", productId);
             return shoppingStoreService.removeProductFromStore(productId);
         } catch (Exception e) {
-            log.error("Ошибка удаления товара из магазина.");
+            log.error("Ошибка удаления товара из магазина.", e);
             throw e;
         }
     }
@@ -72,7 +72,7 @@ public class ShoppingStoreController {
             log.info("Установка статуса по товару {}", setProductQuantityStateRequest);
             return shoppingStoreService.setProductQuantityState(setProductQuantityStateRequest);
         } catch (Exception e) {
-            log.error("Ошибка установки статуса.");
+            log.error("Ошибка установки статуса.", e);
             throw e;
         }
     }
@@ -83,7 +83,7 @@ public class ShoppingStoreController {
             log.info("Получение сведений по товару из БД: {}", productId);
             return shoppingStoreService.getProduct(productId);
         } catch (Exception e) {
-            log.error("Ошибка получения сведений по товару из БД.");
+            log.error("Ошибка получения сведений по товару из БД.", e);
             throw e;
         }
     }

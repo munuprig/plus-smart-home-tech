@@ -26,7 +26,7 @@ public class ShoppingCartController {
             log.info("Получение актуальной корзины для авторизованного пользователя. {}", username);
             return shoppingCartService.getShoppingCart(username);
         } catch (Exception e) {
-            log.error("Ошибка получения актуальной корзины.");
+            log.error("Ошибка получения актуальной корзины.", e);
             throw e;
         }
     }
@@ -38,7 +38,7 @@ public class ShoppingCartController {
             log.info("Добавление товара в корзину {}", username);
             return shoppingCartService.addProductToShoppingCart(username, request);
         } catch (Exception e) {
-            log.error("Ошибка добавления товара в корзину.");
+            log.error("Ошибка добавления товара в корзину.", e);
             throw e;
         }
     }
@@ -49,7 +49,7 @@ public class ShoppingCartController {
             log.info("Деактивация корзины товаров для пользователя {}", username);
             shoppingCartService.deactivateCurrentShoppingCart(username);
         } catch (Exception e) {
-            log.error("Ошибка деактивации корзины товаров для пользователя.");
+            log.error("Ошибка деактивации корзины товаров для пользователя.", e);
             throw e;
         }
     }
@@ -60,7 +60,7 @@ public class ShoppingCartController {
             log.info("Изменение состава товаров в корзине {}", username);
             return shoppingCartService.removeFromShoppingCart(username, request);
         } catch (Exception e) {
-            log.error("Ошибка изменения состава товаров в корзине.");
+            log.error("Ошибка изменения состава товаров в корзине.", e);
             throw e;
         }
     }
@@ -72,7 +72,7 @@ public class ShoppingCartController {
             log.info("Изменение количества товаров в корзине. {}", username);
             return shoppingCartService.changeProductQuantity(username, requestDto);
         } catch (Exception e) {
-            log.error("Ошибка изменения количества товаров в корзине.");
+            log.error("Ошибка изменения количества товаров в корзине.", e);
             throw e;
         }
     }
@@ -83,7 +83,7 @@ public class ShoppingCartController {
             log.info("Бронирование корзины покупок для пользователя {}", username);
             return shoppingCartService.bookingProductsForUser(username);
         } catch (Exception e) {
-            log.error("Ошибка бронирования корзины покупок для пользователя.");
+            log.error("Ошибка бронирования корзины покупок для пользователя.", e);
             throw e;
         }
     }

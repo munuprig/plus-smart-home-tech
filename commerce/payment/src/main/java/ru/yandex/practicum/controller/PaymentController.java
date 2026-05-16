@@ -27,7 +27,7 @@ public class PaymentController {
             log.info("Формирование оплаты для заказа (переход в платежный шлюз): {}", orderDto);
             return paymentService.createPayment(orderDto);
         } catch (Exception e) {
-            log.error("Ошибка формирования оплаты для заказа.");
+            log.error("Ошибка формирования оплаты для заказа.", e);
             throw e;
         }
     }
@@ -38,7 +38,7 @@ public class PaymentController {
             log.info("Расчёт полной стоимости заказа: {}", orderDto);
             return paymentService.getTotalCost(orderDto);
         } catch (Exception e) {
-            log.error("Ошибка расчёта полной стоимости заказа: .");
+            log.error("Ошибка расчёта полной стоимости заказа: ", e);
             throw e;
         }
     }
@@ -49,7 +49,7 @@ public class PaymentController {
             log.info("Метод для эмуляции успешной оплаты в платежного шлюза: {}", orderId);
             paymentService.paymentSuccess(orderId);
         } catch (Exception e) {
-            log.error("Ошибка метода.");
+            log.error("Ошибка метода.", e);
             throw e;
         }
     }
@@ -60,7 +60,7 @@ public class PaymentController {
             log.info("Расчёт стоимости товаров в заказе: {}", orderDto);
             return paymentService.productCost(orderDto);
         } catch (Exception e) {
-            log.error("Ошибка расчёта стоимости товаров в заказе.");
+            log.error("Ошибка расчёта стоимости товаров в заказе.", e);
             throw e;
         }
     }
@@ -71,7 +71,7 @@ public class PaymentController {
             log.info("Метод для эмуляции отказа в оплате платежного шлюза: {}", orderId);
             paymentService.paymentFailed(orderId);
         } catch (Exception e) {
-            log.error("Ошибка метода.");
+            log.error("Ошибка метода.", e);
             throw e;
         }
     }

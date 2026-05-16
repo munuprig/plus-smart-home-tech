@@ -30,6 +30,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartDto getShoppingCart(String username) {
         checkUsername(username);
         ShoppingCart shoppingCart = shoppingCartRepository.findByUsername(username);
+        if (shoppingCart == null) {
+            throw new NoProductsInShoppingCartException(
+                    "Пользователь " + username + " не имеет корзину покупок.");
+        }
         return shoppingCartMapper.toShoppingCartDto(shoppingCart);
     }
 
@@ -48,6 +52,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public void deactivateCurrentShoppingCart(String username) {
         checkUsername(username);
         ShoppingCart shoppingCart = shoppingCartRepository.findByUsername(username);
+        if (shoppingCart == null) {
+            throw new NoProductsInShoppingCartException(
+                    "Пользователь " + username + " не имеет корзину покупок.");
+        }
         shoppingCart.setActive(false);
     }
 
@@ -56,7 +64,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         checkUsername(username);
         ShoppingCart shoppingCart = shoppingCartRepository.findByUsername(username);
         if (shoppingCart == null) {
-            throw new NoProductsInShoppingCartException("Пользователь " + username + " не имеет корзину покупок.");
+            throw new NoProductsInShoppingCartException(
+                    "Пользователь " + username + " не имеет корзину покупок.");
         }
         shoppingCart.setProducts(request);
         return shoppingCartMapper.toShoppingCartDto(shoppingCart);
@@ -66,6 +75,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartDto changeProductQuantity(String username, ChangeProductQuantityRequest requestDto) {
         checkUsername(username);
         ShoppingCart shoppingCart = shoppingCartRepository.findByUsername(username);
+        if (shoppingCart == null) {
+            throw new NoProductsInShoppingCartException(
+                    "Пользователь " + username + " не имеет корзину покупок.");
+        }
         shoppingCart.getProducts().entrySet().stream()
                 .filter(entry -> entry.getKey().equals(requestDto.getProductId()))
                 .peek(entry -> entry.setValue(requestDto.getNewQuantity()))

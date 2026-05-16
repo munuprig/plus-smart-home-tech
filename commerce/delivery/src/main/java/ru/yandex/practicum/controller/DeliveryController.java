@@ -35,7 +35,7 @@ public class DeliveryController {
             log.info("Эмуляция успешной доставки товара {}", deliveryId);
             deliveryService.deliverySuccessful(deliveryId);
         } catch (Exception e) {
-            log.error("Ошибка эмуляции.");
+            log.error("Ошибка эмуляции.", e);
             throw e;
         }
     }
@@ -46,7 +46,7 @@ public class DeliveryController {
             log.info("Эмуляция получения товара в доставку {}", deliveryId);
             deliveryService.deliveryPicked(deliveryId);
         } catch (Exception e) {
-            log.error("Ошибка эмуляции.");
+            log.error("Ошибка эмуляции.", e);
             throw e;
         }
     }
@@ -57,7 +57,7 @@ public class DeliveryController {
             log.info("Эмуляция неудачного вручения товара {}", deliveryId);
             deliveryService.deliveryFailed(deliveryId);
         } catch (Exception e) {
-            log.error("Ошибка эмуляции.");
+            log.error("Ошибка эмуляции.", e);
             throw e;
         }
     }
@@ -68,7 +68,7 @@ public class DeliveryController {
             log.info("Расчёт полной стоимости доставки заказа {}", orderDto);
             return deliveryService.deliveryCost(orderDto);
         } catch (Exception e) {
-            log.error("Ошибка расчёта полной стоимости доставки заказа.");
+            log.error("Ошибка расчёта полной стоимости доставки заказа.", e);
             throw e;
         }
     }
